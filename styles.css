@@ -1,0 +1,7 @@
+
+#fitem_singlesection-format-submit-button > .col-md-3 {
+    display: none !important;
+}
+#page-course-view-singlesection #page-footer {
+    display: none;
+}
