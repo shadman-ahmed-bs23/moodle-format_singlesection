@@ -53,6 +53,43 @@ function get_section_redirect_url($modinfo, $section, $course, $userid)
 }
 
 /**
+ * Returns the first activity url of the course as a string.
+ * @param $modinfo
+ * @param $section
+ * @param $course
+ * @return string
+ */
+function get_first_activity_url($modinfo, $section, $course) {
+    foreach ($modinfo->sections[$section->section] as $cmid) {
+        $thismod = $modinfo->cms[$cmid];
+
+        if ($thismod->uservisible) {
+            if (!empty($thismod->url)) {
+                $urlObj = $thismod->url;
+                $url = $urlObj->get_path();
+                $id = $urlObj->get_param('id');
+                break; // Only the first url is needed.
+            }
+        }
+    }
+    // The URL returns like '/moodle/mod/....'.
+    // Don't need the '/moodle' part.
+    $urlArray = explode('/', $url);
+
+    // Removing first two elements of array. ('/' and 'moodle').
+    array_shift($urlArray);
+    array_shift($urlArray);
+
+    // Join the array using implode() function
+    $urlString = "/";
+    $urlString .= implode("/", $urlArray);
+    $urlString .= '?id=' . $id;
+
+    // Returns the url as a string to be passed in 'moodle_url()'.
+    return $urlString;
+}
+
+/**
  * @param $modinfo
  * @param $section
  * @param $course

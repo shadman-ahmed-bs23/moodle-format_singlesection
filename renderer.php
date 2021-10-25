@@ -388,16 +388,21 @@ class format_singlesection_renderer extends format_section_renderer_base
 
     }
 
-
-    public function print_something($course, $sections) {
+    /**
+     * Output the html for the course starting page.
+     *
+     * @param stdClass $course The course entry from DB
+     * @param array $sections (argument not used)
+     * @throws moodle_exception
+     */
+    public function print_course_starting_page($course, $sections) {
         // Fetch course format.
         $singlesection_format = course_get_format($course);
         $course = $singlesection_format->get_course();
         $format_options = $singlesection_format->get_settings();
+        $modinfo = get_fast_modinfo($course);
 
-        //var_dump($sections);
-
-        // Course summary.
+        // Print course summary.
         echo html_writer::tag('h2', 'Introduction');
         echo html_writer::tag('p', $course->summary);
 
@@ -409,7 +414,13 @@ class format_singlesection_renderer extends format_section_renderer_base
             'src' => $bg_image
         ));
 
+        // Get the first section's info.
+        $section = $modinfo->get_section_info(1);
 
+        //Get the url of the first activity in the first section.
+        $url = get_first_activity_url($modinfo, $section, $course);
+
+        // Button links to first activity of the first section.
         echo html_writer::tag('a',
             html_writer::tag('button',
                 html_writer::tag('span', 'Start Course') .
@@ -421,10 +432,7 @@ class format_singlesection_renderer extends format_section_renderer_base
                     'class' => 'btn btn-primary mt-3',
                 ])
             , [
-                'href' => new moodle_url('/course/view.php', [
-                    'id' => $course->id,
-                    'section' => 1,
-                ])
+                'href' => new moodle_url($url)
             ]);
 
     }
