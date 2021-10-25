@@ -59,8 +59,8 @@ if ($PAGE->user_allowed_editing()) {
 
         $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
     } else {
-        $renderer->print_course_starting_page($course, 1);
-        //$renderer->print_multiple_section_page($course, null, null, null, null);
+        //$renderer->print_course_starting_page($course, 1);
+        $renderer->print_multiple_section_page($course, null, null, null, null);
     }
 } else {
     if ($displaysection) {
