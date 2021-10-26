@@ -44,5 +44,11 @@ $string['intro'] = 'Course Intro';
 $string['intro_help'] = 'Help';
 $string['media'] = 'Media';
 $string['media_help'] = 'Help';
+$string['audio'] = 'Audio';
+$string['audio_help'] = 'Audio Language';
+$string['subtitles'] = 'Subtitles';
+$string['level'] = 'Level';
+$string['duration'] = 'Duration';
+$string['chapternumbers'] = 'Chapter Numbers';
 $string['redirect_message'] = 'Course section has no activity. Please contact with course administrator!';
 

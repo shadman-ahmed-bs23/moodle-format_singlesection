@@ -24,6 +24,8 @@
 global $CFG;
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/format/lib.php');
+//require_once($CFG->dirroot . '/completion/classes/progress.php');
+
 
 
 /**
@@ -192,4 +194,20 @@ function format_singlesection_get_certificate_module_url($course, $userid)
     ]);
 
 
+}
+
+/**
+ * @param $course
+ * @param $userid
+ * @return $cinfo
+ */
+function course_completion_percentage($course, $userid)
+{
+
+    $progressinfo = \core_completion\progress::get_course_progress_percentage($course, $userid);
+    var_dump($progressinfo);
+    return $progressinfo;
+//    $cinfo = new completion_info($course);
+//    //var_dump($cinfo);
+//    return $cinfo->get_course_progress_percentage($course, $id);
 }

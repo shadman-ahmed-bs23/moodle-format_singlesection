@@ -278,7 +278,22 @@ class format_singlesection extends format_base {
                 ],
                 'media' => [
                     'type' => PARAM_RAW,
-                ]
+                ],
+                'audio' => [
+                    'type' => PARAM_TEXT,
+                ],
+                'subtitles' => [
+                    'type' => PARAM_TEXT,
+                ],
+                'level' => [
+                    'type' => PARAM_TEXT,
+                ],
+                'duration' => [
+                    'type' => PARAM_TEXT,
+                ],
+                'chapternumbers' => [
+                    'type' => PARAM_TEXT,
+                ],
             ];
         }
         if ($foreditform && !isset($courseformatoptions['coursedisplay']['label'])) {
@@ -311,6 +326,36 @@ class format_singlesection extends format_base {
                     'label' => get_string('media','format_singlesection'),
                     'help' => 'media',
                     'element_type' => 'textarea',
+                    'help_component' => 'format_singlesection',
+                ),
+                'audio' => array(
+                    'label' => get_string('audio','format_singlesection'),
+                    'help' => 'Audio',
+                    'element_type' => 'text',
+                    'help_component' => 'format_singlesection',
+                ),
+                'subtitles' => array(
+                    'label' => get_string('subtitles','format_singlesection'),
+                    'help' => 'Subtitles',
+                    'element_type' => 'text',
+                    'help_component' => 'format_singlesection',
+                ),
+                'level' => array(
+                    'label' => get_string('level','format_singlesection'),
+                    'help' => 'Level',
+                    'element_type' => 'text',
+                    'help_component' => 'format_singlesection',
+                ),
+                'duration' => array(
+                    'label' => get_string('duration','format_singlesection'),
+                    'help' => 'Duration',
+                    'element_type' => 'text',
+                    'help_component' => 'format_singlesection',
+                ),
+                'chapternumbers' => array(
+                    'label' => get_string('chapternumbers','format_singlesection'),
+                    'help' => 'ChapterNumbers',
+                    'element_type' => 'text',
                     'help_component' => 'format_singlesection',
                 ),
             ];

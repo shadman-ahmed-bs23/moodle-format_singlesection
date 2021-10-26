@@ -396,15 +396,27 @@ class format_singlesection_renderer extends format_section_renderer_base
      * @throws moodle_exception
      */
     public function print_course_starting_page($course, $sections) {
+        global $USER;
         // Fetch course format.
         $singlesection_format = course_get_format($course);
         $course = $singlesection_format->get_course();
         $format_options = $singlesection_format->get_settings();
         $modinfo = get_fast_modinfo($course);
 
+
         // Print course summary.
         echo html_writer::tag('h2', 'Introduction');
         echo html_writer::tag('p', $course->summary);
+
+        echo html_writer::start_div('meta-data');
+        echo html_writer::start_tag('ul');
+        echo html_writer::tag('li', 'Audio: '. $format_options['audio']);
+        echo html_writer::tag('li', 'Subtitles: '. $format_options['subtitles']);
+        echo html_writer::tag('li', 'Level: '. $format_options['level']);
+        echo html_writer::tag('li', 'Duration: '. $format_options['duration']);
+        echo html_writer::tag('li', 'Chapter Numbers: '. $format_options['audio']);
+        echo html_writer::end_tag('ul');
+        echo html_writer::end_div();
 
         // Display course welcome image after course summary.
         $bg_image = display_file($format_options['singlesectioncoursesinglesectionimage_filemanager']);
@@ -434,6 +446,10 @@ class format_singlesection_renderer extends format_section_renderer_base
             , [
                 'href' => new moodle_url($url)
             ]);
+        $userid = $USER->id;
+       $random = course_completion_percentage($course, $userid);
+       echo '<pre>';
+       print_r($random);
 
     }
 
