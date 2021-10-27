@@ -403,19 +403,33 @@ class format_singlesection_renderer extends format_section_renderer_base
         $format_options = $singlesection_format->get_settings();
         $modinfo = get_fast_modinfo($course);
 
+        echo html_writer::start_div('intro');
 
         // Print course summary.
+        echo html_writer::start_div('summary');
         echo html_writer::tag('h2', 'Introduction');
         echo html_writer::tag('p', $course->summary);
+        echo html_writer::end_div();
 
         echo html_writer::start_div('meta-data');
-        echo html_writer::start_tag('ul');
-        echo html_writer::tag('li', 'Audio: '. $format_options['audio']);
-        echo html_writer::tag('li', 'Subtitles: '. $format_options['subtitles']);
-        echo html_writer::tag('li', 'Level: '. $format_options['level']);
-        echo html_writer::tag('li', 'Duration: '. $format_options['duration']);
-        echo html_writer::tag('li', 'Chapter Numbers: '. $format_options['audio']);
+        echo html_writer::start_tag('ul', [
+            'class' => 'box'
+        ]);
+
+        echo html_writer::tag('li',
+            html_writer::span('Audio: '). $format_options['audio']);
+        echo html_writer::tag('li',
+            html_writer::span('Subtitles: ') . $format_options['subtitles']);
+        echo html_writer::tag('li',
+            html_writer::span('Level: ') . $format_options['level']);
+        echo html_writer::tag('li',
+            html_writer::span('Duration: ') . $format_options['duration']);
+        echo html_writer::tag('li',
+            html_writer::span('Chapter Numbers: ') . $format_options['audio']);
         echo html_writer::end_tag('ul');
+
+        echo html_writer::end_div();
+
         echo html_writer::end_div();
 
         // Display course welcome image after course summary.
@@ -432,6 +446,7 @@ class format_singlesection_renderer extends format_section_renderer_base
         //Get the url of the first activity in the first section.
         $url = get_first_activity_url($modinfo, $section, $course);
 
+        echo html_writer::start_div('bottom');
         // Button links to first activity of the first section.
         echo html_writer::tag('a',
             html_writer::tag('button',
@@ -446,10 +461,31 @@ class format_singlesection_renderer extends format_section_renderer_base
             , [
                 'href' => new moodle_url($url)
             ]);
+
         $userid = $USER->id;
-       $random = course_completion_percentage($course, $userid);
-       echo '<pre>';
-       print_r($random);
+        $percentage = course_completion_percentage($course, $userid);
+
+        echo html_writer::start_div('progressbar-container');
+        // Progress bar.
+        echo html_writer::start_div('progress');
+
+        echo html_writer::div('', 'progress-bar', [
+            'role' => 'progressbar',
+            'style' => 'width: '. $percentage . '%',
+            'aria-valuemin'=> '0',
+            'aria-valuemax' => '100',
+        ]);
+
+        echo html_writer::end_div();
+
+        echo html_writer::end_div();
+
+        echo html_writer::div($percentage . '%', 'percentage');
+
+        echo html_writer::div(html_writer::span(' | ', 'stand'), 'stand-container');
+
+        // End bottom div.
+        echo html_writer::end_div();
 
     }
 

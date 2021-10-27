@@ -205,9 +205,5 @@ function course_completion_percentage($course, $userid)
 {
 
     $progressinfo = \core_completion\progress::get_course_progress_percentage($course, $userid);
-    var_dump($progressinfo);
     return $progressinfo;
-//    $cinfo = new completion_info($course);
-//    //var_dump($cinfo);
-//    return $cinfo->get_course_progress_percentage($course, $id);
 }
