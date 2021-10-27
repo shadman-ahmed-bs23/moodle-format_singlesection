@@ -44,6 +44,7 @@ $string['intro'] = 'Course Intro';
 $string['intro_help'] = 'Help';
 $string['media'] = 'Media';
 $string['media_help'] = 'Help';
+$string['metainfos'] = 'Meta Information';
 $string['audio'] = 'Audio';
 $string['audio_help'] = 'Audio Language';
 $string['subtitles'] = 'Subtitles';

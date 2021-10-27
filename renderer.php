@@ -412,21 +412,39 @@ class format_singlesection_renderer extends format_section_renderer_base
         echo html_writer::end_div();
 
         echo html_writer::start_div('meta-data');
-        echo html_writer::start_tag('ul', [
-            'class' => 'box'
-        ]);
+//        echo html_writer::start_tag('ul', [
+//            'class' => 'box'
+//        ]);
 
-        echo html_writer::tag('li',
-            html_writer::span('Audio: '). $format_options['audio']);
-        echo html_writer::tag('li',
-            html_writer::span('Subtitles: ') . $format_options['subtitles']);
-        echo html_writer::tag('li',
-            html_writer::span('Level: ') . $format_options['level']);
-        echo html_writer::tag('li',
-            html_writer::span('Duration: ') . $format_options['duration']);
-        echo html_writer::tag('li',
-            html_writer::span('Chapter Numbers: ') . $format_options['audio']);
-        echo html_writer::end_tag('ul');
+        $resourcemetainfo  = trim($format_options['metainfos']);
+        if (!empty($resourcemetainfo)) :
+            $metainfos = explode("\n", trim($format_options['metainfos']));
+            echo html_writer::start_div('mod-custommod-right-part');
+            echo html_writer::start_div('mod-custommod-right');
+            echo html_writer::start_tag('ul',array('class' => 'mod-custommod-right-content'));
+            foreach ($metainfos as $metainfo):
+                $infos = explode(":",$metainfo);
+                if (isset($infos[0] ) && isset($infos[1])){
+                    echo "<p class='mod-custommod-task'>$infos[0]:<span class='mod-custommod-subject'>$infos[1]</span></p>";
+                }
+            endforeach;
+            echo html_writer::end_tag('ul');
+            echo html_writer::end_div();
+            echo html_writer::end_div();
+        endif;
+
+//        echo html_writer::tag('li',
+//            html_writer::span('Audio: '). $format_options['audio']);
+//        echo html_writer::tag('li',
+//            html_writer::span('Subtitles: ') . $format_options['subtitles']);
+//        echo html_writer::tag('li',
+//            html_writer::span('Level: ') . $format_options['level']);
+//        echo html_writer::tag('li',
+//            html_writer::span('Duration: ') . $format_options['duration']);
+//        echo html_writer::tag('li',
+//            html_writer::span('Chapter Numbers: ') . $format_options['audio']);
+
+//        echo html_writer::end_tag('ul');
 
         echo html_writer::end_div();
 
