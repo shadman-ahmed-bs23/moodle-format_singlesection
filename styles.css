@@ -57,6 +57,11 @@ mod-custommod-right {
     font-size: 20px;
 }
 
+img {
+    margin-bottom: 50px;
+}
+
+
 .meta-data {
     margin-top: 30px;
     flex: 0.4;
@@ -89,8 +94,7 @@ mod-custommod-right {
 }
 
 .progressbar-container {
-    flex: 0.3;
-    width: 160px !important;
+    flex: 0.2;
     margin-top: 1.5rem;
 }
 .progress {
@@ -123,3 +127,14 @@ mod-custommod-right {
     width: 1px;
     color: #9497a2;
 }
+
+.star-container {
+    margin-top: 1rem;
+}
+
+.star {
+    font-size: 2rem !important;
+    color: #593c6e !important;
+}
+
+

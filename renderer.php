@@ -502,6 +502,11 @@ class format_singlesection_renderer extends format_section_renderer_base
 
         echo html_writer::div(html_writer::span(' | ', 'stand'), 'stand-container');
 
+        echo html_writer::span(
+            html_writer::tag('i', '', [
+                'class' => 'star fa fa-star pl-2 pr-2',
+            ]), 'star-container'
+        );
         // End bottom div.
         echo html_writer::end_div();
 
