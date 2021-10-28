@@ -402,6 +402,13 @@ class format_singlesection_renderer extends format_section_renderer_base
         $course = $singlesection_format->get_course();
         $format_options = $singlesection_format->get_settings();
         $modinfo = get_fast_modinfo($course);
+        // Get the first section's info.
+        $section = $modinfo->get_section_info(1);
+        //Get the url of the first activity in the first section.
+        $url = get_first_activity_url($modinfo, $section, $course);
+        $userid = $USER->id;
+        // Course completion percentage.
+        $percentage = course_completion_percentage($course, $userid);
 
         echo html_writer::start_div('intro');
 
@@ -411,10 +418,8 @@ class format_singlesection_renderer extends format_section_renderer_base
         echo html_writer::tag('p', $course->summary);
         echo html_writer::end_div();
 
+        // Print meta infos.
         echo html_writer::start_div('meta-data');
-//        echo html_writer::start_tag('ul', [
-//            'class' => 'box'
-//        ]);
 
         $resourcemetainfo  = trim($format_options['metainfos']);
         if (!empty($resourcemetainfo)) :
@@ -433,56 +438,64 @@ class format_singlesection_renderer extends format_section_renderer_base
             echo html_writer::end_div();
         endif;
 
-//        echo html_writer::tag('li',
-//            html_writer::span('Audio: '). $format_options['audio']);
-//        echo html_writer::tag('li',
-//            html_writer::span('Subtitles: ') . $format_options['subtitles']);
-//        echo html_writer::tag('li',
-//            html_writer::span('Level: ') . $format_options['level']);
-//        echo html_writer::tag('li',
-//            html_writer::span('Duration: ') . $format_options['duration']);
-//        echo html_writer::tag('li',
-//            html_writer::span('Chapter Numbers: ') . $format_options['audio']);
-
-//        echo html_writer::end_tag('ul');
-
         echo html_writer::end_div();
 
         echo html_writer::end_div();
 
-        // Display course welcome image after course summary.
-        $bg_image = display_file($format_options['singlesectioncoursesinglesectionimage_filemanager']);
-        echo html_writer::tag('image','',array(
-            'width' => "100%",
-            'height' => "100%",
-            'src' => $bg_image
-        ));
-
-        // Get the first section's info.
-        $section = $modinfo->get_section_info(1);
-
-        //Get the url of the first activity in the first section.
-        $url = get_first_activity_url($modinfo, $section, $course);
+        if($percentage != 100):
+            // Display course welcome image after course summary.
+            $bg_image = display_file($format_options['singlesectioncoursesinglesectionimage_filemanager']);
+            echo html_writer::tag('image','',array(
+                'width' => "100%",
+                'height' => "100%",
+                'src' => $bg_image,
+                'class' => 'welcome-image'
+            ));
+        else:
+            // Display course completion image.
+            echo html_writer::tag('image','',array(
+                'width' => "100%",
+                'height' => "100%",
+                'src' => 'https://user-images.githubusercontent.com/72008371/139215146-f401af3b-a145-4914-aad1-b3d35fdf2aa3.png',
+                'class' => 'welcome-image'
+            ));
+        endif;
 
         echo html_writer::start_div('bottom');
-        // Button links to first activity of the first section.
-        echo html_writer::tag('a',
-            html_writer::tag('button',
-                html_writer::tag('span', 'Start Course') .
-                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          ' .
-                html_writer::tag('i', '')
+        if($percentage != 100):
+            // Button links to first activity of the first section.
+            echo html_writer::tag('a',
+                html_writer::tag('button',
+                    html_writer::tag('span', 'Start Course') .
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          ' .
+                    html_writer::tag('i', '')
+                    , [
+                        'name' => 'btn_info',
+                        'type' => 'submit',
+                        'class' => 'btn btn-primary mt-3',
+                    ])
                 , [
-                    'name' => 'btn_info',
-                    'type' => 'submit',
-                    'class' => 'btn btn-primary mt-3',
-                ])
-            , [
-                'href' => new moodle_url($url)
-            ]);
+                    'href' => new moodle_url($url)
+                ]);
+        else:
+            // If the course completion percentage is 100%
+            // then, 'Download your certificate' button.
+            echo html_writer::tag('a',
+                html_writer::tag('button',
+                    html_writer::tag('span', 'Download your certificate') .
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          ' .
+                    html_writer::tag('i', '')
+                    , [
+                        'name' => 'btn_info',
+                        'type' => 'submit',
+                        'class' => 'btn btn-primary mt-3',
+                    ])
+                , [
+                    'href' => new moodle_url($url)
+                ]);
+        endif;
 
-        $userid = $USER->id;
-        $percentage = course_completion_percentage($course, $userid);
-
+        // Progress Bar Container
         echo html_writer::start_div('progressbar-container');
         // Progress bar.
         echo html_writer::start_div('progress');
@@ -493,9 +506,9 @@ class format_singlesection_renderer extends format_section_renderer_base
             'aria-valuemin'=> '0',
             'aria-valuemax' => '100',
         ]);
-
+        // End Progress bar container div.
         echo html_writer::end_div();
-
+        // End progress div.
         echo html_writer::end_div();
 
         echo html_writer::div($percentage . '%', 'percentage');

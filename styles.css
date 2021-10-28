@@ -22,13 +22,13 @@
     padding-right: 30px;
     line-height: 2.0;
 }
-mod-custommod-right {
+.mod-custommod-right {
     border: 1px solid #115ca8;
     box-sizing: border-box;
     width: 100%;
     text-align: justify;
-    padding: 5px;
-    padding-top: 20px;
+    padding: 30px;
+
 }
 
 .mod-custommod-task {
@@ -57,7 +57,7 @@ mod-custommod-right {
     font-size: 20px;
 }
 
-img {
+.welcome-image {
     margin-bottom: 50px;
 }
 
@@ -65,24 +65,7 @@ img {
 .meta-data {
     margin-top: 30px;
     flex: 0.4;
-    border: 1px solid #115ca8;
-    padding: 30px;
     height: 50%;
-}
-
-.box {
-    border: 1px solid #115ca8;
-    box-sizing: border-box;
-    width: 100%;
-    text-align: justify;
-    padding: 35px;
-    line-height: 2.0;
-
-}
-
-.box li span {
-    color: #115ca8;
-    font-weight: 700;
 }
 
 .bottom {
