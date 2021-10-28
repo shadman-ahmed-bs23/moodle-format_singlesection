@@ -410,37 +410,7 @@ class format_singlesection_renderer extends format_section_renderer_base
         // Course completion percentage.
         $percentage = course_completion_percentage($course, $userid);
 
-        echo html_writer::start_div('intro');
 
-        // Print course summary.
-        echo html_writer::start_div('summary');
-        echo html_writer::tag('h2', 'Introduction');
-        echo html_writer::tag('p', $course->summary);
-        echo html_writer::end_div();
-
-        // Print meta infos.
-        echo html_writer::start_div('meta-data');
-
-        $resourcemetainfo  = trim($format_options['metainfos']);
-        if (!empty($resourcemetainfo)) :
-            $metainfos = explode("\n", trim($format_options['metainfos']));
-            echo html_writer::start_div('mod-custommod-right-part');
-            echo html_writer::start_div('mod-custommod-right');
-            echo html_writer::start_tag('ul',array('class' => 'mod-custommod-right-content'));
-            foreach ($metainfos as $metainfo):
-                $infos = explode(":",$metainfo);
-                if (isset($infos[0] ) && isset($infos[1])){
-                    echo "<p class='mod-custommod-task'>$infos[0]:<span class='mod-custommod-subject'>$infos[1]</span></p>";
-                }
-            endforeach;
-            echo html_writer::end_tag('ul');
-            echo html_writer::end_div();
-            echo html_writer::end_div();
-        endif;
-
-        echo html_writer::end_div();
-
-        echo html_writer::end_div();
 
         if($percentage != 100):
             // Display course welcome image after course summary.
@@ -472,7 +442,7 @@ class format_singlesection_renderer extends format_section_renderer_base
                     , [
                         'name' => 'btn_info',
                         'type' => 'submit',
-                        'class' => 'btn btn-primary mt-3',
+                        'class' => 'btn btn-primary mt-1',
                     ])
                 , [
                     'href' => new moodle_url($url)
@@ -488,7 +458,7 @@ class format_singlesection_renderer extends format_section_renderer_base
                     , [
                         'name' => 'btn_info',
                         'type' => 'submit',
-                        'class' => 'btn btn-primary mt-3',
+                        'class' => 'btn btn-primary mt-1',
                     ])
                 , [
                     'href' => new moodle_url($url)
@@ -521,6 +491,39 @@ class format_singlesection_renderer extends format_section_renderer_base
             ]), 'star-container'
         );
         // End bottom div.
+        echo html_writer::end_div();
+
+        echo html_writer::start_div('intro');
+
+        // Print course summary.
+        echo html_writer::start_div('summary');
+        echo html_writer::tag('h2', 'Introduction');
+        echo html_writer::tag('p', $course->summary);
+
+        // End intro div.
+        echo html_writer::end_div();
+        // Print meta infos.
+        echo html_writer::start_div('meta-data');
+
+        $resourcemetainfo  = trim($format_options['metainfos']);
+        if (!empty($resourcemetainfo)) :
+            $metainfos = explode("\n", trim($format_options['metainfos']));
+            echo html_writer::start_div('mod-custommod-right-part');
+            echo html_writer::start_div('mod-custommod-right');
+            echo html_writer::start_tag('ul',array('class' => 'mod-custommod-right-content'));
+            foreach ($metainfos as $metainfo):
+                $infos = explode(":",$metainfo);
+                if (isset($infos[0] ) && isset($infos[1])){
+                    echo "<p class='mod-custommod-task'>$infos[0]:<span class='mod-custommod-subject'>$infos[1]</span></p>";
+                }
+            endforeach;
+            echo html_writer::end_tag('ul');
+            echo html_writer::end_div();
+            echo html_writer::end_div();
+        endif;
+
+        echo html_writer::end_div();
+
         echo html_writer::end_div();
 
     }

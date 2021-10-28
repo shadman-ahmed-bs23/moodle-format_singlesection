@@ -101,12 +101,12 @@
 
 .stand-container {
     flex: 0.02;
-    margin-top: 0.5rem;
+    margin-top: 0.1rem;
 }
 
 
 .stand {
-    font-size: 170%;
+    font-size: 2rem;
     width: 1px;
     color: #9497a2;
 }
@@ -118,6 +118,10 @@
 .star {
     font-size: 2rem !important;
     color: #593c6e !important;
+}
+
+.bottom {
+    margin-bottom: 30px;
 }
 
 
