@@ -406,11 +406,17 @@ class format_singlesection_renderer extends format_section_renderer_base
         $section = $modinfo->get_section_info(1);
         //Get the url of the first activity in the first section.
         $url = get_first_activity_url($modinfo, $section, $course);
+        $lastactivityurl = get_last_activity_url($modinfo, $section, $course);
+        $lastactivityurl .= "&downloadown=1";
+
         $userid = $USER->id;
         // Course completion percentage.
         $percentage = course_completion_percentage($course, $userid);
 
-
+        // Print course header.
+        echo html_writer::start_div('mb-5');
+        echo html_writer::tag('h1', $course->fullname);
+        echo html_writer::end_div();
 
         if($percentage != 100):
             // Display course welcome image after course summary.
@@ -461,7 +467,7 @@ class format_singlesection_renderer extends format_section_renderer_base
                         'class' => 'btn btn-primary mt-1',
                     ])
                 , [
-                    'href' => new moodle_url($url)
+                    'href' => new moodle_url($lastactivityurl)
                 ]);
         endif;
 
