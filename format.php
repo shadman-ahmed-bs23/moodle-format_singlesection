@@ -49,25 +49,28 @@ if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context
 // Make sure section 0 is created.
 course_create_sections_if_missing($course, 0);
 
-//format_singlesection_user_redirect_algorithm($course, $USER->id);
-
-
 $renderer = $PAGE->get_renderer('format_singlesection');
 
 if ($PAGE->user_allowed_editing()) {
-    if ($displaysection) {
-
-        $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
-    } else {
-        //$renderer->print_course_starting_page($course, 1);
         $renderer->print_multiple_section_page($course, null, null, null, null);
-    }
 } else {
-    if ($displaysection) {
-        $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
-    } else {
-        $renderer->print_course_starting_page($course, $sections);
-        //$renderer->print_course_landing_page($course, null, null, null, null, 0);
+    // If this is a single activity course with customcert then redirect user directly to activity page.
+    // No need to show course landing page
+    $modules = get_fast_modinfo($course->id)->get_cms();
+    $modules = array_filter($modules,function ($cms){
+        return $cms->modname != 'customcert';
+    });
+
+    if (count($modules) == 1){
+        $values = array_values($modules);
+        $item = array_shift($values);
+        redirect($item->url);
+    }else{
+        if ($displaysection) {
+            $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
+        } else {
+            $renderer->print_course_starting_page($course, null);
+        }
     }
 }
 
