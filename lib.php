@@ -276,9 +276,6 @@ class format_singlesection extends format_base {
                     'default' => $courseconfig->coursedisplay,
                     'type' => PARAM_INT,
                 ],
-                'media' => [
-                    'type' => PARAM_RAW,
-                ],
                 'metainfos' => [
                     'type' => PARAM_RAW,
                 ],
@@ -311,12 +308,6 @@ class format_singlesection extends format_base {
                     'help' => 'coursedisplay',
                     'help_component' => 'moodle',
                 ],
-                'media' => array(
-                    'label' => get_string('media','format_singlesection'),
-                    'help' => 'media',
-                    'element_type' => 'textarea',
-                    'help_component' => 'format_singlesection',
-                ),
                 'metainfos' => array(
                     'label' => get_string('metainfos','format_singlesection'),
                     'help' => 'metainfos',
@@ -338,74 +329,74 @@ class format_singlesection extends format_base {
      * @param bool $forsection 'true' if this is a section edit form, 'false' if this is course edit form.
      * @return array array of references to the added form elements.
      */
-    public function create_edit_form_elements(&$mform, $forsection = false) {
-        global $COURSE, $USER;
-        $elements = parent::create_edit_form_elements($mform, $forsection);
-
-        if (!$forsection && (empty($COURSE->id) || $COURSE->id == SITEID)) {
-            // Add "numsections" element to the create course form - it will force new course to be prepopulated
-            // with empty sections.
-            // The "Number of sections" option is no longer available when editing course, instead teachers should
-            // delete and add sections when needed.
-            $courseconfig = get_config('moodlecourse');
-            $max = (int)$courseconfig->maxsections;
-            $element = $mform->addElement('select', 'numsections', get_string('numberweeks'), range(0, $max ?: 52));
-            $mform->setType('numsections', PARAM_INT);
-            if (is_null($mform->getElementValue('numsections'))) {
-                $mform->setDefault('numsections', $courseconfig->numsections);
-            }
-            array_unshift($elements, $element);
-        }
-
-        $elementsnew = [];
-
-        $fs = get_file_storage();
-        $coursecontext = context_course::instance($this->courseid);
-        $usercontext = context_user::instance($USER->id);
-
-        foreach ($elements as $key => $element) {
-
-            if ($element->getName() == 'hiddensections') {
-                $single_data = new stdClass;
-                $single_file_item_id = $this->get_singlesectioncoursesinglesectionimage_filemanager();
-                $fs->delete_area_files($usercontext->id, 'user', 'draft', $single_file_item_id);
-                $single_data = file_prepare_standard_filemanager(
-                    $single_data,
-                    'singlesectioncoursesinglesectionimage',
-                    array('accepted_types' => array('.jpg', '.gif', '.png'), 'maxfiles' => 1),
-                    $coursecontext,
-                    'format_singlesection',
-                    'singlesectioncoursesinglesectionimage_filearea',
-                    $single_file_item_id
-                );
-
-                $single_filemanager = $mform->addElement(
-                    'filemanager',
-                    'singlesectioncoursesinglesectionimage_filemanager',
-                    new lang_string('singlesectionsinglesectionimage', 'format_singlesection'),
-                    null,
-                    array('maxfiles' => 1, 'accepted_types' => array('.jpg', '.gif', '.png'))
-                );
-                $single_filemanager->setValue($single_data->singlesectioncoursesinglesectionimage_filemanager);
-                $elementsnew[] = $single_filemanager;
-            }
-            unset($elements[$key]);
-            $elementsnew[] = $element;
-
-        }
-        //Get the values the values from the editor coursestart that are loaded in the form and transform then in a array (
-
-        if(isset($mform->_defaultValues['coursestart'])) {
-            $mform->_defaultValues['coursestart'] = array (
-                'text' => $mform->_defaultValues['coursecurriculum'],
-                'format' => 1,
-                'itemid' => null
-            );
-        }
-
-        return $elementsnew;
-
-    }
+//    public function create_edit_form_elements(&$mform, $forsection = false) {
+//        global $COURSE, $USER;
+//        $elements = parent::create_edit_form_elements($mform, $forsection);
+//
+//        if (!$forsection && (empty($COURSE->id) || $COURSE->id == SITEID)) {
+//            // Add "numsections" element to the create course form - it will force new course to be prepopulated
+//            // with empty sections.
+//            // The "Number of sections" option is no longer available when editing course, instead teachers should
+//            // delete and add sections when needed.
+//            $courseconfig = get_config('moodlecourse');
+//            $max = (int)$courseconfig->maxsections;
+//            $element = $mform->addElement('select', 'numsections', get_string('numberweeks'), range(0, $max ?: 52));
+//            $mform->setType('numsections', PARAM_INT);
+//            if (is_null($mform->getElementValue('numsections'))) {
+//                $mform->setDefault('numsections', $courseconfig->numsections);
+//            }
+//            array_unshift($elements, $element);
+//        }
+//
+//        $elementsnew = [];
+//
+//        $fs = get_file_storage();
+//        $coursecontext = context_course::instance($this->courseid);
+//        $usercontext = context_user::instance($USER->id);
+//
+//        foreach ($elements as $key => $element) {
+//
+//            if ($element->getName() == 'hiddensections') {
+//                $single_data = new stdClass;
+//                $single_file_item_id = $this->get_singlesectioncoursesinglesectionimage_filemanager();
+//                $fs->delete_area_files($usercontext->id, 'user', 'draft', $single_file_item_id);
+//                $single_data = file_prepare_standard_filemanager(
+//                    $single_data,
+//                    'singlesectioncoursesinglesectionimage',
+//                    array('accepted_types' => array('.jpg', '.gif', '.png'), 'maxfiles' => 1),
+//                    $coursecontext,
+//                    'format_singlesection',
+//                    'singlesectioncoursesinglesectionimage_filearea',
+//                    $single_file_item_id
+//                );
+//
+//                $single_filemanager = $mform->addElement(
+//                    'filemanager',
+//                    'singlesectioncoursesinglesectionimage_filemanager',
+//                    new lang_string('singlesectionsinglesectionimage', 'format_singlesection'),
+//                    null,
+//                    array('maxfiles' => 1, 'accepted_types' => array('.jpg', '.gif', '.png'))
+//                );
+//                $single_filemanager->setValue($single_data->singlesectioncoursesinglesectionimage_filemanager);
+//                $elementsnew[] = $single_filemanager;
+//            }
+//            unset($elements[$key]);
+//            $elementsnew[] = $element;
+//
+//        }
+//        //Get the values the values from the editor coursestart that are loaded in the form and transform then in a array (
+//
+//        if(isset($mform->_defaultValues['coursestart'])) {
+//            $mform->_defaultValues['coursestart'] = array (
+//                'text' => $mform->_defaultValues['coursecurriculum'],
+//                'format' => 1,
+//                'itemid' => null
+//            );
+//        }
+//
+//        return $elementsnew;
+//
+//    }
 
     /**
      * Updates format options for a course.
@@ -418,36 +409,36 @@ class format_singlesection extends format_base {
      *     this object contains information about the course before update
      * @return bool whether there were any changes to the options values
      */
-    public function update_course_format_options($data, $oldcourse = null) {
-
-        if (!isset($data->singlesectioncoursesinglesectionimage_filemanager)) {
-            $data->singlesectioncoursesinglesectionimage_filemanager = '';
-        }
-        if (!empty($data)) {
-
-            // Used optional_param() instead of using $_POST and $_GET.
-            $contextid = context_course::instance($this->courseid);
-
-            if (!empty($data->singlesectioncoursesinglesectionimage_filemanager)) {
-                file_postupdate_standard_filemanager(
-                    $data,
-                    'singlesectioncoursesinglesectionimage',
-                    array ('accepted_types' => 'images', 'maxfiles' => 1),
-                    $contextid,
-                    'format_singlesection',
-                    'singlesectioncoursesinglesectionimage_filearea',
-                    $data->singlesectioncoursesinglesectionimage_filemanager
-                );
-            }
-
-            $this->set_singlesectioncoursesinglesectionimage_filemanager($data->singlesectioncoursesinglesectionimage_filemanager);
-        }
-
-        $data->coursedisplay = 1;
-
-        return $this->update_format_options($data);
-
-    }
+//    public function update_course_format_options($data, $oldcourse = null) {
+//
+//        if (!isset($data->singlesectioncoursesinglesectionimage_filemanager)) {
+//            $data->singlesectioncoursesinglesectionimage_filemanager = '';
+//        }
+//        if (!empty($data)) {
+//
+//            // Used optional_param() instead of using $_POST and $_GET.
+//            $contextid = context_course::instance($this->courseid);
+//
+//            if (!empty($data->singlesectioncoursesinglesectionimage_filemanager)) {
+//                file_postupdate_standard_filemanager(
+//                    $data,
+//                    'singlesectioncoursesinglesectionimage',
+//                    array ('accepted_types' => 'images', 'maxfiles' => 1),
+//                    $contextid,
+//                    'format_singlesection',
+//                    'singlesectioncoursesinglesectionimage_filearea',
+//                    $data->singlesectioncoursesinglesectionimage_filemanager
+//                );
+//            }
+//
+//            $this->set_singlesectioncoursesinglesectionimage_filemanager($data->singlesectioncoursesinglesectionimage_filemanager);
+//        }
+//
+//        $data->coursedisplay = 1;
+//
+//        return $this->update_format_options($data);
+//
+//    }
 
     /**
      * DB value setter for remuicourseimage_filemanager option
