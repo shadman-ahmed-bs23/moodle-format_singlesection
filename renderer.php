@@ -417,7 +417,7 @@ class format_singlesection_renderer extends format_section_renderer_base
 
         $userid = $USER->id;
         // Course completion percentage.
-        $percentage = round(course_completion_percentage($course, $userid), 2);
+        $percentage = floor(course_completion_percentage($course, $userid));
 
         // Print course header.
         echo html_writer::start_div('mb-5');
@@ -427,7 +427,7 @@ class format_singlesection_renderer extends format_section_renderer_base
 
         if($percentage != 100):
              $bg_image = get_course_image();
-             $bg_image = !empty($bg_image) ? $bg_image : $OUTPUT->image_url('default_course_image', 'theme_allergan_blank');
+             $bg_image = !empty($bg_image) ? $bg_image : $OUTPUT->image_url('default_course_image', 'format_singlesection')->out();
 
             echo html_writer::tag('image','',array(
                 'width' => "100%",
@@ -440,7 +440,7 @@ class format_singlesection_renderer extends format_section_renderer_base
             echo html_writer::tag('image','',array(
                 'width' => "100%",
                 'height' => "100%",
-                'src' => $OUTPUT->image_url('ami-course-completed', 'theme_allergan_blank'),
+                'src' => $OUTPUT->image_url('default_course_image', 'format_singlesection')->out(),
                 'class' => 'welcome-image'
             ));
         endif;
