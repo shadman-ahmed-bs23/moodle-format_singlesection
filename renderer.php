@@ -421,7 +421,7 @@ class format_singlesection_renderer extends format_section_renderer_base
 
         // Print course header.
         echo html_writer::start_div('mb-5');
-        echo html_writer::tag('p', get_string('interactive_course', 'format_singlesection') ,array('class' => 'sub-heading'));
+        //echo html_writer::tag('p', get_string('interactive_course', 'format_singlesection') ,array('class' => 'sub-heading'));
         echo html_writer::tag('h2', $course->fullname);
         echo html_writer::end_div();
 
@@ -559,36 +559,36 @@ class format_singlesection_renderer extends format_section_renderer_base
         endif;
 
 
-        echo html_writer::start_div();
-
-        $is_favourite = $this->is_favourite();
-
-//        echo html_writer::span(
-//            ' | ' .
-//            html_writer::span($is_favourite) ,
-//            'ami-stand' );
-
-        echo html_writer::start_div('d-flex');
-            echo html_writer::start_div('mt-2 mr-3');
-
-                echo html_writer::start_div('', ['id'=> 'vertical-bar']);
-                // End div 'vertical-bar'
-                echo html_writer::end_div();
-
-
-
-            // End div 'mt-2 mr-3'
-            echo html_writer::end_div();
-
-            echo html_writer::start_div('mt-3');
-                echo $is_favourite;
-            // End div 'mt-3
-            echo html_writer::end_div();
-        // End div d-flex
-        echo html_writer::end_div();
-
-        // End div without class.
-        echo html_writer::end_div();
+//        echo html_writer::start_div();
+//
+//        $is_favourite = $this->is_favourite();
+//
+////        echo html_writer::span(
+////            ' | ' .
+////            html_writer::span($is_favourite) ,
+////            'ami-stand' );
+//
+//        echo html_writer::start_div('d-flex');
+//            echo html_writer::start_div('mt-2 mr-3');
+//
+//                echo html_writer::start_div('', ['id'=> 'vertical-bar']);
+//                // End div 'vertical-bar'
+//                echo html_writer::end_div();
+//
+//
+//
+//            // End div 'mt-2 mr-3'
+//            echo html_writer::end_div();
+//
+//            echo html_writer::start_div('mt-3');
+//                echo $is_favourite;
+//            // End div 'mt-3
+//            echo html_writer::end_div();
+//        // End div d-flex
+//        echo html_writer::end_div();
+//
+//        // End div without class.
+//        echo html_writer::end_div();
 
         // End row (Start/resume Button)
         echo html_writer::end_div();
