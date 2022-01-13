@@ -214,66 +214,18 @@ class format_singlesection_renderer extends format_section_renderer_base
         $sectiontitle .= html_writer::end_tag('div');
         echo $sectiontitle;
 
-         //if ($this->page->user_allowed_editing()) {
-            // Now the list of sections..
-            echo $this->start_section_list();
+        echo $this->start_section_list();
 
-            echo $this->section_header($thissection, $course, true, $displaysection);
+        echo $this->section_header($thissection, $course, true, $displaysection);
 
-            $completioninfo = new completion_info($course);
-            echo $completioninfo->display_help_icon();
+        $completioninfo = new completion_info($course);
+        echo $completioninfo->display_help_icon();
 
-            echo $this->courserenderer->course_section_cm_list($course, $thissection, $displaysection);
-            echo $this->courserenderer->course_section_add_cm_control($course, $displaysection, $displaysection);
-            echo $this->section_footer();
-            echo $this->end_section_list();
-         // }
-         // else block (Will be deleted).
-//         else {
-//            // Now the list of sections..
-//            echo $this->start_section_list();
-//            echo $this->section_header($thissection, $course, true, $displaysection);
-////            var_dump($this->section_header($thissection, $course, true, $displaysection));
-////            if ($redirect_url = get_section_redirect_url($modinfo, $thissection, $course, $USER->id)) {
-////                echo html_writer::tag('a',
-////                    html_writer::tag('button',
-////                        html_writer::tag('span', 'NEST') .
-////                        '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          ' .
-////                        html_writer::tag('i', '', ['class' => 'fas fa-arrow-right closed'])
-////                        , [
-////                            'name' => 'btn_info',
-////                            'type' => 'button',
-////                            'class' => 'btn btn-primary mt-3',
-////                        ])
-////                    , [
-////                        'href' => $redirect_url,
-////                        'class' => 'nav-link mb-2',
-////                        'style' => 'padding: 0;display: inline-block;'
-////                    ]);
-////            } else {
-////                echo html_writer::tag('a',
-////                    html_writer::tag('button',
-////                        html_writer::tag('span', 'NESTE') .
-////                        '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          ' .
-////                        html_writer::tag('i', '', ['class' => 'fas fa-arrow-right closed'])
-////                        , [
-////                            'name' => 'btn_info',
-////                            'type' => 'button',
-////                            'class' => 'btn btn-primary mt-3',
-////                        ])
-////                    , [
-////                        'href' => new moodle_url('/course/view.php', [
-////                            'id' => $course->id,
-////                            'section' => $displaysection,
-////                        ]),
-////                        'class' => 'nav-link mb-2',
-////                        'style' => 'padding: 0;display: inline-block;'
-////                    ]);
-////            }
-//
-////            }
-//            echo $this->end_section_list();
-//        }
+        echo $this->courserenderer->course_section_cm_list($course, $thissection, $displaysection);
+        echo $this->courserenderer->course_section_add_cm_control($course, $displaysection, $displaysection);
+        echo $this->section_footer();
+        echo $this->end_section_list();
+
         // Close single-section div.
         echo html_writer::end_tag('div');
     }
@@ -410,14 +362,14 @@ class format_singlesection_renderer extends format_section_renderer_base
         // Get the first section's info.
         $section = $modinfo->get_section_info(0);
         //Get the url of the first activity in the first section.
-        $url = get_first_activity_url($modinfo->get_cms());
+        $url = format_singlesection_get_first_activity_url($modinfo->get_cms());
 
         // Get the url of the custom certificate activity of the url.
-        $lastactivityurl = get_certificate_activity_url($modinfo->get_cms());
+        $lastactivityurl = format_singlesection_get_certificate_activity_url($modinfo->get_cms());
 
         $userid = $USER->id;
         // Course completion percentage.
-        $percentage = floor(course_completion_percentage($course, $userid));
+        $percentage = floor(format_singlesection_course_completion_percentage($course, $userid));
 
         // Print course header.
         echo html_writer::start_div('mb-5');
@@ -516,7 +468,7 @@ class format_singlesection_renderer extends format_section_renderer_base
                     , [
                         'name' => 'btn_info',
                         'type' => 'submit',
-                        'class' => 'btn btn-block mt-1 btn-restart',
+                        'class' => 'btn btn-block mt-1 btn-restart btn-outline-primary',
                     ])
                 , [
                     'href' => new moodle_url($url),
@@ -530,7 +482,7 @@ class format_singlesection_renderer extends format_section_renderer_base
 
         echo html_writer::start_div(' progress-part d-flex ');
 
-        echo html_writer::start_div('progress mt-4', [
+        echo html_writer::start_div('progress mt-3', [
             'style' => "height: 7px",
         ]);
 
@@ -553,9 +505,9 @@ class format_singlesection_renderer extends format_section_renderer_base
         // End progress.
         echo html_writer::end_div();
         if($percentage == 100 ) :
-            echo html_writer::div($percentage . '%', 'concluded pl-2 pr-4 text-success mt-3');
+            echo html_writer::div($percentage . '%', 'concluded pl-2 pr-4 text-success mt-2');
         else:
-            echo html_writer::div($percentage . '%', 'concluded pl-2 pr-4 text-primary mt-3');
+            echo html_writer::div($percentage . '%', 'concluded pl-2 pr-4 text-primary mt-2');
         endif;
 
 

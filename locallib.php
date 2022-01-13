@@ -35,7 +35,7 @@ require_once($CFG->dirroot . '/course/format/lib.php');
  * @return moodle_url|null
  * @throws coding_exception
  */
-function get_section_redirect_url($modinfo, $section, $course, $userid)
+function format_singlesection_get_section_redirect_url($modinfo, $section, $course, $userid)
 {
     if (empty($modinfo->sections[$section->section])) {
         return null;
@@ -61,7 +61,7 @@ function get_section_redirect_url($modinfo, $section, $course, $userid)
  * @param $course
  * @return string
  */
-function get_first_activity_url($modules) {
+function format_singlesection_get_first_activity_url($modules) {
     $urlObj = null;
     foreach ($modules as $module) {
         // Only add activities the user can access, aren't in stealth mode and have a url (eg. mod_label does not).
@@ -84,7 +84,7 @@ function get_first_activity_url($modules) {
  * @return string
  */
 
-function get_certificate_activity_url($modules) {
+function format_singlesection_get_certificate_activity_url($modules) {
     $urlObj = null;
     foreach ($modules as $module) {
         // Only add activities the user can access, aren't in stealth mode and have a url (eg. mod_label does not).
@@ -137,7 +137,7 @@ function format_singlesection_resumed_course_activity_url($course, $userid,$modu
  * @return null[]
  * @throws coding_exception
  */
-function section_last_activity_url($modinfo, $section, $course, $userid, $onlyid)
+function format_singlesection_section_last_activity_url($modinfo, $section, $course, $userid, $onlyid)
 {
     if (empty($modinfo->sections[$section->section])) {
         return [null,null];
@@ -161,13 +161,13 @@ function section_last_activity_url($modinfo, $section, $course, $userid, $onlyid
  * @param $userid
  * @return bool
  */
-function course_completed($course, $userid)
+function format_singlesection_course_completed($course, $userid)
 {
     $cinfo = new completion_info($course);
     return $cinfo->is_course_complete($userid);
 }
 
-function progress_bar_info($course, $modid)
+function format_singlesection_progress_bar_info($course, $modid)
 {
     $modinfo = get_fast_modinfo($course);
 
@@ -240,7 +240,7 @@ function format_singlesection_get_certificate_module_url($course, $userid)
  * @param $userid
  * @return $cinfo
  */
-function course_completion_percentage($course, $userid)
+function format_singlesection_course_completion_percentage($course, $userid)
 {
 
     $progressinfo = \core_completion\progress::get_course_progress_percentage($course, $userid);

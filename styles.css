@@ -7,7 +7,6 @@
 }
 
 .sub-heading {
-    font-family: "Neue Haas Unica Regular";
     font-size: 18px;
     color: #2F3332;
 }
@@ -29,11 +28,6 @@
     line-height: 2.0;
 }
 
-/*.welcome-image {*/
-/*    margin-bottom: 50px;*/
-/*}*/
-
-
 .meta-data {
     margin-top: 30px;
     flex: 0.4;
@@ -47,20 +41,19 @@
 .bottom .start-course {
     flex: 1;
 }
-
 .bottom .first-button {
     flex: 0.5;
 }
 .bottom .restart-button {
     flex: 0.5;
-    color: #593c6e !important;
     font-weight: bold;
-
+    text-decoration: none !important;
+}
+.restart-button, .first-button, .start-course{
+    text-decoration: none !important;
 }
 
 .btn-restart {
-    color: #593c63 !important;
-    font-family: "Neue Haas Unica Extra Bold";
     font-size: 18px;
 }
 
@@ -74,17 +67,3 @@
 .concluded {
     font-weight: 700;
 }
-.ami-star {
-    font-size: 110%;
-    color: #9497a2 !important;
-}
-.ami-stand {
-    font-size: 170%;
-    width: 1px;
-    color: #9497a2;
-}
-
-.btn-restart {
-    color: #593c6e !important;
-}
-
