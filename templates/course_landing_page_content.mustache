@@ -1,0 +1,83 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template format_singlesection/course_landing_page_content
+
+    Course landing page content.
+
+    Context variables required for this template:
+    * url - URL of the first activity of the course
+    * lastactivityurl - URL of the last activity(certificate) of the course
+    * startcourse - bool (Returns false if the course has started)
+    * iscompleted - bool (Returns if the course is completed)
+    * coursename - Course full name
+    * imageurl - URL of the image of course
+    * progresspercentage - Completion percentage
+    * coursesummary - Course summary/introduction
+}}
+
+<div>
+    <h2>{{ coursename }}</h2>
+</div>
+<div>
+    <img width="100%" height="700" class="mt-5" src="{{{imageurl}}}" alt="">
+</div>
+<div class="row pt-5 justify-content-between">
+    <div class="col-md-4 mt-1">
+        {{#startcourse}}
+            <a href="{{{url}}}" class="btn btn-primary btn-block">
+                {{#str}} startcourse, format_singlesection {{/str}}
+            </a>
+        {{/startcourse}}
+        {{^startcourse}}
+            {{^iscompleted}}
+                <a href="{{{url}}}" class="btn btn-primary btn-block">
+                    {{#str}} resumecourse, format_singlesection {{/str}}
+                </a>
+            {{/iscompleted}}
+            {{#iscompleted}}
+                <a href="{{{lastactivityurl}}}" class="btn btn-primary btn-block">
+                    {{#str}} downloadcertificate, format_singlesection {{/str}}
+                </a>
+
+            {{/iscompleted}}
+        {{/startcourse}}
+    </div>
+    <div class="col-md-4 mt-1">
+        {{#iscompleted}}
+            <a href="{{{url}}}" class="btn btn-outline-primary btn-block">
+                {{#str}} restartcourse, format_singlesection {{/str}}
+            </a>
+        {{/iscompleted}}
+
+    </div>
+
+    <div class="progress-part d-flex">
+        <div class="progress mt-3" style="height: 7px">
+            <div class="progress-bar" id="progress-bar" role="progressbar" style="width: {{ progresspercentage }}%" aria-valuemin="0" aria-valuemax="100"></div>
+
+        </div>
+        <div class="concluded pl-2 pr-4 text-primary mt-2" id="percentage-div">
+            <span id="progress-percentage">{{ progresspercentage }} </span> %
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3 p-3">
+    <h4>Introduction</h4>
+    {{{ coursesummary}}}
+</div>
