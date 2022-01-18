@@ -344,7 +344,6 @@ class format_singlesection_renderer extends format_section_renderer_base
         }
 
     }
-
     /**
      * Output the html for the course starting page.
      *
@@ -354,383 +353,43 @@ class format_singlesection_renderer extends format_section_renderer_base
      */
     public function print_course_starting_page($course) {
         global $USER, $OUTPUT;
+
         // Fetch course format.
         $singlesection_format = course_get_format($course);
         $course = $singlesection_format->get_course();
         $format_options = $singlesection_format->get_settings();
         $modinfo = get_fast_modinfo($course);
-        // Get the first section's info.
-        $section = $modinfo->get_section_info(0);
-        //Get the url of the first activity in the first section.
+
+        // Get course completion percentage.
+        $percentage = floor(format_singlesection_course_completion_percentage($course, $USER->id));
+
+        //Get the url for start course button.
         $url = format_singlesection_get_first_activity_url($modinfo->get_cms());
+
+        // Get the url for resume course button.
+        $url = format_singlesection_resumed_course_activity_url($course, $userid, $modinfo->get_cms()) ?? $url;
 
         // Get the url of the custom certificate activity of the url.
         $lastactivityurl = format_singlesection_get_certificate_activity_url($modinfo->get_cms());
 
-        $userid = $USER->id;
-        // Course completion percentage.
-        $percentage = floor(format_singlesection_course_completion_percentage($course, $userid));
+        $startcourse = $percentage == 0;
+        $iscompleted = $percentage == 100;
 
-        // Print course header.
-        echo html_writer::start_div('mb-5');
-        //echo html_writer::tag('p', get_string('interactive_course', 'format_singlesection') ,array('class' => 'sub-heading'));
-        echo html_writer::tag('h2', $course->fullname);
-        echo html_writer::end_div();
+        $bg_image = get_course_image();
+        $bg_image = !empty($bg_image) ? $bg_image : $OUTPUT->image_url('default_course_image', 'format_singlesection')->out();
 
-        if($percentage != 100):
-             $bg_image = get_course_image();
-             $bg_image = !empty($bg_image) ? $bg_image : $OUTPUT->image_url('default_course_image', 'format_singlesection')->out();
+        $templatecontext = [
+            'url' => $url,
+            'lastactivityurl' => $lastactivityurl,
+            'startcourse' => $startcourse,
+            'iscompleted' => $iscompleted,
+            'coursename' => $course->fullname,
+            'imageurl' => $bg_image,
+            'progresspercentage' => $percentage,
+            'coursesummary' => $course->summary,
+        ];
 
-            echo html_writer::tag('image','',array(
-                'width' => "100%",
-                'height' => "100%",
-                'src' => $bg_image,
-                'class' => 'welcome-image'
-            ));
-        else:
-            // Display course completion image.
-            echo html_writer::tag('image','',array(
-                'width' => "100%",
-                'height' => "100%",
-                'src' => $OUTPUT->image_url('default_course_image', 'format_singlesection')->out(),
-                'class' => 'welcome-image'
-            ));
-        endif;
-
-        // Start or Resume course button
-        echo html_writer::start_div('row pt-5 justify-content-between');
-
-        // Start Course or download certificate button.
-        if($percentage != 100):
-            if($percentage > 0):
-                $url = format_singlesection_resumed_course_activity_url($course, $userid, $modinfo->get_cms()) ?? $url;
-                // Button links to first activity of the first section 'Start Course' .
-                echo html_writer::start_div('col-md-4');
-                echo html_writer::tag('a',
-                    html_writer::tag('button',
-                        html_writer::tag('span', get_string('resumecourse', 'format_singlesection')) .
-                        html_writer::tag('i', '')
-                        , [
-                            'name' => 'btn_info',
-                            'type' => 'submit',
-                            'class' => 'btn btn-primary mt-1 btn-block',
-                        ])
-                    , [
-                        'href' =>$url,
-                        'class' => 'start-course'
-                    ]);
-                echo html_writer::end_div();
-            else:
-                //'Resume Course' .
-                echo html_writer::start_div('col-md-4');
-                echo html_writer::tag('a',
-                    html_writer::tag('button',
-                        html_writer::tag('span', get_string('startcourse', 'format_singlesection')) .
-                        html_writer::tag('i', '')
-                        , [
-                            'name' => 'btn_info',
-                            'type' => 'submit',
-                            'class' => 'btn btn-primary mt-1 btn-block',
-                        ])
-                    , [
-                        'href' =>$url,
-                        'class' => 'start-course'
-                    ]);
-                echo html_writer::end_div();
-            endif;
-        else:
-            // If the course completion percentage is 100%
-            // then, 'Download your certificate' button.
-            echo html_writer::start_div('col-md-4');
-            echo html_writer::tag('a',
-                html_writer::tag('button',
-                    html_writer::tag('span', get_string('downloadcertificate', 'format_singlesection')) .
-                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          ' .
-                    html_writer::tag('i', '')
-                    , [
-                        'name' => 'btn_info',
-                        'type' => 'submit',
-                        'class' => 'btn btn-primary mt-1 btn-block',
-                    ])
-                , [
-                    'href' => $lastactivityurl,
-                    'class' => 'first-button',
-                    'target' => '_blank'
-                ]);
-            echo html_writer::end_div();
-
-            echo html_writer::start_div('col-md-4');
-            echo html_writer::tag('a',
-                html_writer::tag('button',
-                    html_writer::tag('span', get_string('restartcourse', 'format_singlesection')) .
-                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          ' .
-                    html_writer::tag('i', '')
-                    , [
-                        'name' => 'btn_info',
-                        'type' => 'submit',
-                        'class' => 'btn btn-block mt-1 btn-restart btn-outline-primary',
-                    ])
-                , [
-                    'href' => new moodle_url($url),
-                    'class' => 'restart-button'
-                ]);
-            echo html_writer::end_div();
-        endif;
-
-
-        // Div: progress-part
-
-        echo html_writer::start_div(' progress-part d-flex ');
-
-        echo html_writer::start_div('progress mt-3', [
-            'style' => "height: 7px",
-        ]);
-
-        if($percentage == 100 ) :
-            echo html_writer::div('', 'progress-bar bg-success', [
-                'role' => 'progressbar',
-                'style' => 'width: '. $percentage . '%' ,
-                'aria-valuemin'=> '0',
-                'aria-valuemax' => '100',
-            ]);
-        else:
-            echo html_writer::div('', 'progress-bar', [
-                'role' => 'progressbar',
-                'style' => 'width: '. $percentage . '%',
-                'aria-valuemin'=> '0',
-                'aria-valuemax' => '100',
-            ]);
-        endif;
-
-        // End progress.
-        echo html_writer::end_div();
-        if($percentage == 100 ) :
-            echo html_writer::div($percentage . '%', 'concluded pl-2 pr-4 text-success mt-2');
-        else:
-            echo html_writer::div($percentage . '%', 'concluded pl-2 pr-4 text-primary mt-2');
-        endif;
-
-
-//        echo html_writer::start_div();
-//
-//        $is_favourite = $this->is_favourite();
-//
-////        echo html_writer::span(
-////            ' | ' .
-////            html_writer::span($is_favourite) ,
-////            'ami-stand' );
-//
-//        echo html_writer::start_div('d-flex');
-//            echo html_writer::start_div('mt-2 mr-3');
-//
-//                echo html_writer::start_div('', ['id'=> 'vertical-bar']);
-//                // End div 'vertical-bar'
-//                echo html_writer::end_div();
-//
-//
-//
-//            // End div 'mt-2 mr-3'
-//            echo html_writer::end_div();
-//
-//            echo html_writer::start_div('mt-3');
-//                echo $is_favourite;
-//            // End div 'mt-3
-//            echo html_writer::end_div();
-//        // End div d-flex
-//        echo html_writer::end_div();
-//
-//        // End div without class.
-//        echo html_writer::end_div();
-
-        // End row (Start/resume Button)
-        echo html_writer::end_div();
-        echo html_writer::end_div();
-
-        /////////////////////////////
-
-//        echo html_writer::start_div('row');
-//
-//        echo html_writer::start_div('col');
-//
-//        echo html_writer::start_div(' progress-section
-//                                            d-block d-md-flex
-//                                            justify-content-md-between
-//                                            pb-2 align-items-center mb-2');
-//        echo html_writer::start_div('d-flex  pt-5');
-//
-//        // Start Course or download certificate button.
-//        if($percentage != 100):
-//            if($percentage > 0):
-//                $url = format_singlesection_resumed_course_activity_url($course, $userid, $modinfo->get_cms()) ?? $url;
-//                // Button links to first activity of the first section 'Start Course' .
-//                echo html_writer::tag('a',
-//                html_writer::tag('button',
-//                    html_writer::tag('span', get_string('resumecourse', 'format_singlesection')) .
-//                    html_writer::tag('i', '')
-//                    , [
-//                        'name' => 'btn_info',
-//                        'type' => 'submit',
-//                        'class' => BUTTONCLASS,
-//                    ])
-//                , [
-//                    'href' =>$url,
-//                    'class' => 'start-course'
-//                ]);
-//            else:
-//                //'Resume Course' .
-//                echo html_writer::tag('a',
-//                    html_writer::tag('button',
-//                        html_writer::tag('span', get_string('startcourse', 'format_singlesection')) .
-//                        html_writer::tag('i', '')
-//                        , [
-//                            'name' => 'btn_info',
-//                            'type' => 'submit',
-//                            'class' => BUTTONCLASS,
-//                        ])
-//                    , [
-//                        'href' =>$url,
-//                        'class' => 'start-course'
-//                    ]);
-//            endif;
-//        else:
-//            // If the course completion percentage is 100%
-//            // then, 'Download your certificate' button.
-//            echo html_writer::tag('a',
-//                html_writer::tag('button',
-//                    html_writer::tag('span', get_string('downloadcertificate', 'format_singlesection')) .
-//                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          ' .
-//                    html_writer::tag('i', '')
-//                    , [
-//                        'name' => 'btn_info',
-//                        'type' => 'submit',
-//                        'class' => 'btn btn-primary mt-1',
-//                    ])
-//                , [
-//                    'href' => $lastactivityurl,
-//                    'class' => 'first-button'
-//                ]);
-//            echo html_writer::tag('a',
-//                html_writer::tag('button',
-//                    html_writer::tag('span', get_string('restartcourse', 'format_singlesection')) .
-//                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          ' .
-//                    html_writer::tag('i', '')
-//                    , [
-//                        'name' => 'btn_info',
-//                        'type' => 'submit',
-//                        'class' => 'btn mt-1 btn-restart',
-//                    ])
-//                , [
-//                    'href' => new moodle_url($url),
-//                    'class' => 'restart-button'
-//                ]);
-//        endif;
-//
-//        // End d-flex.
-//        echo html_writer::end_div();
-//
-//        echo html_writer::start_div('progress-part pl-2 d-flex align-items-center  pt-5');
-//
-//        echo html_writer::start_div('progress', [
-//            'style' => "height: 7px",
-//        ]);
-//
-//        if($percentage == 100 ) :
-//            echo html_writer::div('', 'progress-bar bg-success', [
-//                'role' => 'progressbar',
-//                'style' => 'width: '. $percentage . '%' ,
-//                'aria-valuemin'=> '0',
-//                'aria-valuemax' => '100',
-//            ]);
-//        else:
-//            echo html_writer::div('', 'progress-bar', [
-//                'role' => 'progressbar',
-//                'style' => 'width: '. $percentage . '%',
-//                'aria-valuemin'=> '0',
-//                'aria-valuemax' => '100',
-//            ]);
-//            endif;
-//
-//        // End progress.
-//        echo html_writer::end_div();
-//        if($percentage == 100 ) :
-//            echo html_writer::div($percentage . '%', 'concluded pl-2 pr-4 text-success');
-//        else:
-//            echo html_writer::div($percentage . '%', 'concluded pl-2 pr-4 text-primary');
-//        endif;
-//
-//
-//        echo html_writer::start_div();
-//
-//        $is_favourite = $this->is_favourite();
-//
-//        echo html_writer::span(
-//            ' | ' .
-//            html_writer::span($is_favourite) ,
-//            'ami-stand' );
-//
-//        // End div without class.
-//        echo html_writer::end_div();
-//
-//        // End progress-part.
-//        echo html_writer::end_div();
-//
-//        // End progress-section.
-//        echo html_writer::end_div();
-//        // End col.
-//        echo html_writer::end_div();
-//        // End row.
-//        echo html_writer::end_div();
-
-        // Print course summary.
-        echo html_writer::start_div('row mt-3');
-
-        echo html_writer::start_div('col-md-8');
-        echo html_writer::start_div('intro');
-
-        echo html_writer::start_div('summary');
-        echo html_writer::tag('h4', get_string('introduction', 'format_singlesection'));
-        echo html_writer::tag('p', $course->summary);
-
-        // End intro div.
-        echo html_writer::end_div();
-
-        echo html_writer::end_div();
-        // End col-md-8.
-        echo html_writer::end_div();
-
-        echo html_writer::start_div('col-md-4');
-
-
-        // Print meta infos.
-
-        echo html_writer::start_div('meta-data');
-
-        $resourcemetainfo  = trim($format_options['metainfos']);
-        if (!empty($resourcemetainfo)) :
-            $metainfos = explode("\n", trim($format_options['metainfos']));
-            echo html_writer::start_div('mod-custommod-right-part');
-            echo html_writer::start_div('mod-custommod-right');
-            echo html_writer::start_tag('ul',array('class' => 'mod-custommod-right-content'));
-            foreach ($metainfos as $metainfo):
-                $infos = explode(":",$metainfo);
-                if (isset($infos[0] ) && isset($infos[1])){
-                    echo "<p class='mod-custommod-task'>$infos[0]:<span class='mod-custommod-subject'>$infos[1]</span></p>";
-                }
-            endforeach;
-            echo html_writer::end_tag('ul');
-            echo html_writer::end_div();
-            echo html_writer::end_div();
-        endif;
-
-        echo html_writer::end_div();
-
-        // End meta data.
-        echo html_writer::end_div();
-        // End col-md-4.
-        echo html_writer::end_div();
-        // End row.
-        echo html_writer::start_div('row');
-
+        echo $OUTPUT->render_from_template('format_singlesection/course_landing_page_content', $templatecontext);
     }
 
     public function is_favourite()
