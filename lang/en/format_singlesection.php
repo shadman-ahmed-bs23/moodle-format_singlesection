@@ -45,12 +45,7 @@ $string['intro_help'] = 'Help';
 $string['media'] = 'Media';
 $string['media_help'] = 'Help';
 $string['metainfos'] = 'Meta Information';
-$string['metainfos_help'] = 'Put each custom mod meta info into each line like 
-Audio: English
-Subtitle: English, French
-Level: Intermediate
-Duration: 18 min
-';
+$string['metainfos_help'] = 'Put each custom mod meta info into each line like Audio: English Subtitle: English, French Level: Intermediate Duration: 18 min';
 $string['audio'] = 'Audio';
 $string['audio_help'] = 'Audio Language';
 $string['subtitles'] = 'Subtitles';
@@ -64,4 +59,5 @@ $string['downloadcertificate'] = 'Download your certificate';
 $string['restartcourse'] = 'Restart the course';
 $string['introduction'] = 'Introduction';
 $string['interactive_course'] = 'INTERACTIVE COURSE';
+$string['unknowncoursesection'] = 'unknowncoursesection';
 

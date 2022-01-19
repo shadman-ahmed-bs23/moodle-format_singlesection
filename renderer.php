@@ -38,8 +38,7 @@ require_once($CFG->dirroot . '/course/format/singlesection/singlesection_common_
  * @copyright 2012 Dan Poltawski
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_singlesection_renderer extends format_section_renderer_base
-{
+class format_singlesection_renderer extends format_section_renderer_base {
 
     /**
      * Constructor method, calls the parent constructor.
@@ -47,8 +46,7 @@ class format_singlesection_renderer extends format_section_renderer_base
      * @param moodle_page $page
      * @param string $target one of rendering target constants
      */
-    public function __construct(moodle_page $page, $target)
-    {
+    public function __construct(moodle_page $page, $target) {
         parent::__construct($page, $target);
 
         // Since format_topics_renderer::section_edit_control_items() only displays the 'Highlight' control
@@ -68,19 +66,18 @@ class format_singlesection_renderer extends format_section_renderer_base
      * @param array $modnamesused (argument not used)
      * @param int $displaysection The section number in the course which is being displayed
      */
-    public function print_course_landing_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection)
-    {
+    public function print_course_landing_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
         global $DB, $COURSE, $USER;
 
         $modinfo = get_fast_modinfo($course);
         $course = course_get_format($course)->get_course();
 
-        $format_options = course_get_format($course)->get_settings();
+        $formatoptions = course_get_format($course)->get_settings();
 
         // Can we view the section in question?
         if (!($sectioninfo = $modinfo->get_section_info($displaysection))) {
             // This section doesn't exist.
-            print_error('unknowncoursesection', 'error', null, $course->fullname);
+            throw new moodle_exception(get_string('unknowncoursesection', 'format_singlesection'));
             return;
         }
 
@@ -117,8 +114,6 @@ class format_singlesection_renderer extends format_section_renderer_base
         $sectiontitle .= $this->output->heading($sectionname, 3, $classes);
 
         $sectiontitle .= html_writer::end_tag('div');
-
-
         echo html_writer::start_div('row');
         echo html_writer::start_div('col-md-6');
         echo $sectiontitle;
@@ -142,14 +137,12 @@ class format_singlesection_renderer extends format_section_renderer_base
             ]);
         echo html_writer::end_div();
         echo html_writer::start_div('col-md-6');
-        echo $format_options['media'];
+        echo $formatoptions['media'];
         echo html_writer::end_div();
         echo html_writer::end_div();
 
         $completioninfo = new completion_info($course);
         echo $completioninfo->display_help_icon();
-
-//        echo $this->courserenderer->course_section_cm_list($course, $thissection, $displaysection);
         echo $this->courserenderer->course_section_add_cm_control($course, $displaysection, $displaysection);
         echo $this->section_footer();
         // Close single-section div.
@@ -167,8 +160,7 @@ class format_singlesection_renderer extends format_section_renderer_base
      * @param array $modnamesused (argument not used)
      * @param int $displaysection The section number in the course which is being displayed
      */
-    public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection)
-    {
+    public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
         global $CFG, $DB, $USER;
         $modinfo = get_fast_modinfo($course);
         $courseformat = course_get_format($course);
@@ -177,7 +169,7 @@ class format_singlesection_renderer extends format_section_renderer_base
         // Can we view the section in question?
         if (!($sectioninfo = $modinfo->get_section_info($displaysection))) {
             // This section doesn't exist.
-            print_error('unknowncoursesection', 'error', null, $course->fullname);
+            throw new moodle_exception(get_string('unknowncoursesection', 'format_singlesection'));
             return;
         }
 
@@ -240,8 +232,7 @@ class format_singlesection_renderer extends format_section_renderer_base
      * @param array $modnames (argument not used)
      * @param array $modnamesused (argument not used)
      */
-    public function print_multiple_section_page($course, $sections, $mods, $modnames, $modnamesused)
-    {
+    public function print_multiple_section_page($course, $sections, $mods, $modnames, $modnamesused) {
 
         $modinfo = get_fast_modinfo($course);
         $course = course_get_format($course)->get_course();
@@ -352,22 +343,22 @@ class format_singlesection_renderer extends format_section_renderer_base
      * @throws moodle_exception
      */
     public function print_course_starting_page($course) {
-        global $USER, $OUTPUT;
+        global $USER;
 
         // Fetch course format.
-        $singlesection_format = course_get_format($course);
-        $course = $singlesection_format->get_course();
-        $format_options = $singlesection_format->get_settings();
+        $singlesectionformat = course_get_format($course);
+        $course = $singlesectionformat->get_course();
+        $formatoptions = $singlesectionformat->get_settings();
         $modinfo = get_fast_modinfo($course);
 
         // Get course completion percentage.
         $percentage = floor(format_singlesection_course_completion_percentage($course, $USER->id));
 
-        //Get the url for start course button.
+        // Get the url for start course button.
         $url = format_singlesection_get_first_activity_url($modinfo->get_cms());
 
         // Get the url for resume course button.
-        $url = format_singlesection_resumed_course_activity_url($course, $userid, $modinfo->get_cms()) ?? $url;
+        $url = format_singlesection_resumed_course_activity_url($course, $USER->id, $modinfo->get_cms()) ?? $url;
 
         // Get the url of the custom certificate activity of the url.
         $lastactivityurl = format_singlesection_get_certificate_activity_url($modinfo->get_cms());
@@ -375,8 +366,8 @@ class format_singlesection_renderer extends format_section_renderer_base
         $startcourse = $percentage == 0;
         $iscompleted = $percentage == 100;
 
-        $bg_image = get_course_image();
-        $bg_image = !empty($bg_image) ? $bg_image : $OUTPUT->image_url('default_course_image', 'format_singlesection')->out();
+        $bgimage = get_course_image();
+        $bgimage = !empty($bgimage) ? $bgimage : $this->output->image_url('default_course_image', 'format_singlesection')->out();
 
         $templatecontext = [
             'url' => $url,
@@ -384,39 +375,35 @@ class format_singlesection_renderer extends format_section_renderer_base
             'startcourse' => $startcourse,
             'iscompleted' => $iscompleted,
             'coursename' => $course->fullname,
-            'imageurl' => $bg_image,
+            'imageurl' => $bgimage,
             'progresspercentage' => $percentage,
             'coursesummary' => $course->summary,
         ];
 
-        echo $OUTPUT->render_from_template('format_singlesection/course_landing_page_content', $templatecontext);
+        echo $this->output->render_from_template('format_singlesection/course_landing_page_content', $templatecontext);
     }
 
-    public function is_favourite()
-    {
+    public function isfavourite() {
         global $USER, $COURSE;
         $usercontext = context_user::instance($USER->id);
         $ufservice = service_factory::get_service_for_user_context($usercontext);
-        $is_favourite =  $ufservice->favourite_exists('core_course', 'courses', $COURSE->id,
+        $isfavourite = $ufservice->favourite_exists('core_course', 'courses', $COURSE->id,
             \context_course::instance($COURSE->id));
 
-        if($is_favourite):
-            return html_writer::tag('i','',
+        if ($isfavourite):
+            return html_writer::tag('i', '',
                 array(
                     'class' => 'ami-star text-primary fa fa-star star pl-2 pr-2',
                     'data-action' => 'remove-favourite',
                     'data-courseid' => $COURSE->id,
-
                 )
             );
         else:
-            return html_writer::tag('i','',
+            return html_writer::tag('i', '',
                 array(
                     'class' => 'ami-star fa fa-star star pl-2 pr-2',
                     'data-action' => 'add-favourite',
                     'data-courseid' => $COURSE->id,
-
-
                 )
             );
         endif;
@@ -428,8 +415,7 @@ class format_singlesection_renderer extends format_section_renderer_base
      *
      * @return string HTML to output.
      */
-    protected function start_section_list()
-    {
+    protected function start_section_list() {
         return html_writer::start_tag('ul', ['class' => 'topics']);
     }
 
@@ -438,8 +424,7 @@ class format_singlesection_renderer extends format_section_renderer_base
      *
      * @return string HTML to output.
      */
-    protected function end_section_list()
-    {
+    protected function end_section_list() {
         return html_writer::end_tag('ul');
     }
 
@@ -448,8 +433,7 @@ class format_singlesection_renderer extends format_section_renderer_base
      *
      * @return string the page title
      */
-    protected function page_title()
-    {
+    protected function page_title() {
         return get_string('topicoutline');
     }
 
@@ -460,8 +444,7 @@ class format_singlesection_renderer extends format_section_renderer_base
      * @param stdClass $course The course entry from DB
      * @return string HTML to output.
      */
-    public function section_title($section, $course)
-    {
+    public function section_title($section, $course) {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section));
     }
 
@@ -472,8 +455,7 @@ class format_singlesection_renderer extends format_section_renderer_base
      * @param int|stdClass $course The course entry from DB
      * @return string HTML to output.
      */
-    public function section_title_without_link($section, $course)
-    {
+    public function section_title_without_link($section, $course) {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section, false));
     }
 
@@ -485,8 +467,7 @@ class format_singlesection_renderer extends format_section_renderer_base
      * @param bool $onsectionpage true if being printed on a section page
      * @return array of edit control items
      */
-    protected function section_edit_control_items($course, $section, $onsectionpage = false)
-    {
+    protected function section_edit_control_items($course, $section, $onsectionpage = false) {
         if (!$this->page->user_is_editing()) {
             return [];
         }

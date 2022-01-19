@@ -21,7 +21,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
 
 /**
  * Display image file
@@ -31,7 +30,8 @@ defined('MOODLE_INTERNAL') || die;
  * @throws coding_exception
  * @throws dml_exception
  */
-function display_file($itemid, $singlesectioncoursesinglesectionimage_filearea = 'singlesectioncoursesinglesectionimage_filearea'): string {
+function display_file($itemid, $singlesectioncoursesinglesectionimagefilearea =
+'singlesectioncoursesinglesectionimagefilearea'): string {
     global $DB, $CFG;
 
     // Added empty check here to check if 'kidscourseimage_filearea' is set or not.
@@ -40,7 +40,7 @@ function display_file($itemid, $singlesectioncoursesinglesectionimage_filearea =
 
         $tempdata = array();
         foreach ($filedata as $key => $value) {
-            if ($value->filesize > 0 && $value->filearea == $singlesectioncoursesinglesectionimage_filearea) {
+            if ($value->filesize > 0 && $value->filearea == $singlesectioncoursesinglesectionimagefilearea) {
                 $tempdata = $value;
             }
         }
@@ -50,14 +50,16 @@ function display_file($itemid, $singlesectioncoursesinglesectionimage_filearea =
             $files = $fs->get_area_files(
                 $tempdata->contextid,
                 'format_singlesection',
-                $singlesectioncoursesinglesectionimage_filearea,
+                $singlesectioncoursesinglesectionimagefilearea,
                 $itemid
             );
 
             $url = '';
             foreach ($files as $key => $file) {
                 $file->portfoliobutton = '';
-                $url =  moodle_url::make_pluginfile_url($tempdata->contextid,'format_singlesection',$singlesectioncoursesinglesectionimage_filearea,$file->get_itemid(), $file->get_filepath(),$file->get_filename() );
+                $url = moodle_url::make_pluginfile_url($tempdata->contextid, 'format_singlesection',
+                        $singlesectioncoursesinglesectionimagefilearea,
+                    $file->get_itemid(), $file->get_filepath(), $file->get_filename() );
             }
             return $url;
         }
@@ -72,8 +74,7 @@ function display_file($itemid, $singlesectioncoursesinglesectionimage_filearea =
  * @throws dml_exception
  */
 
-function get_course_image()
-{
+function get_course_image() {
     global $COURSE, $CFG;
     $url = '';
     require_once( $CFG->libdir . '/filelib.php' );
@@ -82,11 +83,10 @@ function get_course_image()
     $fs = get_file_storage();
     $files = $fs->get_area_files( $context->id, 'course', 'overviewfiles', 0 );
 
-    foreach ( $files as $f )
-    {
-        if ( $f->is_valid_image() )
-        {
-            $url = moodle_url::make_pluginfile_url( $f->get_contextid(), $f->get_component(), $f->get_filearea(), null, $f->get_filepath(), $f->get_filename(), false );
+    foreach ($files as $f) {
+        if ($f->is_valid_image()) {
+            $url = moodle_url::make_pluginfile_url( $f->get_contextid(), $f->get_component(), $f->get_filearea(), null,
+                $f->get_filepath(), $f->get_filename(), false );
         }
     }
 
