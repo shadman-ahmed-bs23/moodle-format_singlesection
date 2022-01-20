@@ -55,17 +55,17 @@ if ($PAGE->user_allowed_editing()) {
         $renderer->print_multiple_section_page($course, null, null, null, null);
 } else {
     // If this is a single activity course with customcert then redirect user directly to activity page.
-    // No need to show course landing page
+    // No need to show course landing page.
     $modules = get_fast_modinfo($course->id)->get_cms();
-    $modules = array_filter($modules,function ($cms){
+    $modules = array_filter($modules, function ($cms){
         return $cms->modname != 'customcert';
     });
 
-    if (count($modules) == 1){
+    if (count($modules) == 1) {
         $values = array_values($modules);
         $item = array_shift($values);
         redirect($item->url);
-    }else{
+    } else {
         if ($displaysection) {
             $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
         } else {

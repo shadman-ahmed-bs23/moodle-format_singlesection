@@ -21,9 +21,9 @@
  * @copyright 2021 Brain Station 23 Ltd.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-global $CFG;
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot. '/course/format/lib.php');
+global $CFG;
 
 use core\output\inplace_editable;
 
@@ -74,7 +74,8 @@ class format_singlesection extends format_base {
     public function get_settings() {
         if (empty($this->settings) == true) {
             $this->settings = $this->get_format_options();
-            $this->settings['singlesectioncoursesinglesectionimage_filemanager'] = $this->get_singlesectioncoursesinglesectionimage_filemanager();
+            $this->settings['singlesectioncoursesinglesectionimage_filemanager'] =
+                $this->get_singlesectioncoursesinglesectionimage_filemanager();
         }
         $this->settings['coursedisplay'] = 1;
         return $this->settings;
@@ -297,7 +298,7 @@ class format_singlesection extends format_base {
                     'help_component' => 'moodle',
                 ],
                 'metainfos' => array(
-                    'label' => get_string('metainfos','format_singlesection'),
+                    'label' => get_string('metainfos', 'format_singlesection'),
                     'help' => 'metainfos',
                     'element_type' => 'textarea',
                     'help_component' => 'format_singlesection',
@@ -358,7 +359,7 @@ class format_singlesection extends format_base {
             'courseid' => $this->courseid,
             'format' => 'singlesection',
             'name' => 'styles'
-        ), 'sectionid','sectionid,value');
+        ), 'sectionid', 'sectionid, value');
     }
 
 
@@ -496,7 +497,7 @@ function format_singlesection_pluginfile($course, $cm, $context, $filearea, $arg
         'singlesectioncourseimage_filearea',
         'singlesectioncoursesinglesectionimage_filearea'
     );
-    if (!in_array($filearea,$areas )) {
+    if (!in_array($filearea , $areas )) {
         return false;
     }
 

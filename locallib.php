@@ -21,10 +21,9 @@
  * @copyright 2021 Brain Station 23 Ltd.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-global $CFG;
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/format/lib.php');
-//require_once($CFG->dirroot . '/completion/classes/progress.php');
+global $CFG;
 
 
 
@@ -35,8 +34,7 @@ require_once($CFG->dirroot . '/course/format/lib.php');
  * @return moodle_url|null
  * @throws coding_exception
  */
-function format_singlesection_get_section_redirect_url($modinfo, $section, $course, $userid)
-{
+function format_singlesection_get_section_redirect_url($modinfo, $section, $course, $userid) {
     if (empty($modinfo->sections[$section->section])) {
         return null;
     }
@@ -62,17 +60,17 @@ function format_singlesection_get_section_redirect_url($modinfo, $section, $cour
  * @return string
  */
 function format_singlesection_get_first_activity_url($modules) {
-    $urlObj = null;
+    $urlobj = null;
     foreach ($modules as $module) {
         // Only add activities the user can access, aren't in stealth mode and have a url (eg. mod_label does not).
         if (!$module->uservisible || $module->is_stealth() || empty($module->url)) {
             continue;
         }
         // Module URL.
-        $urlObj = new moodle_url($module->url, array('forceview' => 1));
+        $urlobj = new moodle_url($module->url, array('forceview' => 1));
         break;
     }
-    return $urlObj;
+    return $urlobj;
 
 }
 
@@ -85,20 +83,19 @@ function format_singlesection_get_first_activity_url($modules) {
  */
 
 function format_singlesection_get_certificate_activity_url($modules) {
-    $urlObj = null;
+    $urlobj = null;
     foreach ($modules as $module) {
         // Only add activities the user can access, aren't in stealth mode and have a url (eg. mod_label does not).
         if (!$module->uservisible || $module->is_stealth() || empty($module->url)) {
             continue;
         }
         // Module URL.
-        if($module->modname == 'customcert') {
-            $urlObj = new moodle_url($module->url, array('downloadown' => 1));
+        if ($module->modname == 'customcert') {
+            $urlobj = new moodle_url($module->url, array('downloadown' => 1));
             break;
         }
-        // break;
     }
-    return $urlObj;
+    return $urlobj;
 }
 
 /**
@@ -108,8 +105,8 @@ function format_singlesection_get_certificate_activity_url($modules) {
  * @return moodle_url|null
  * @throws moodle_exception
  */
-function format_singlesection_resumed_course_activity_url($course, $userid,$modules) {
-    $urlObj = null;
+function format_singlesection_resumed_course_activity_url($course, $userid, $modules) {
+    $urlobj = null;
     $completion = new \completion_info($course);
     foreach ($modules as $module) {
         // Only add activities the user can access, aren't in stealth mode and have a url (eg. mod_label does not).
@@ -120,12 +117,12 @@ function format_singlesection_resumed_course_activity_url($course, $userid,$modu
         $data = $completion->get_data($module, true, $userid);
         $completed = $data->completionstate == COMPLETION_INCOMPLETE ? 0 : 1;
         // Module URL.
-        if(!$completed) {
-            $urlObj = new moodle_url($module->url, array('forceview' => 1));
+        if (!$completed) {
+            $urlobj = new moodle_url($module->url, array('forceview' => 1));
             break;
         }
     }
-    return $urlObj;
+    return $urlobj;
 }
 
 
@@ -137,10 +134,9 @@ function format_singlesection_resumed_course_activity_url($course, $userid,$modu
  * @return null[]
  * @throws coding_exception
  */
-function format_singlesection_section_last_activity_url($modinfo, $section, $course, $userid, $onlyid)
-{
+function format_singlesection_section_last_activity_url($modinfo, $section, $course, $userid, $onlyid) {
     if (empty($modinfo->sections[$section->section])) {
-        return [null,null];
+        return [null, null];
     }
 
     // Generate array with count of activities in this section.
@@ -152,7 +148,7 @@ function format_singlesection_section_last_activity_url($modinfo, $section, $cou
             return [$thismod->id, $thismod->url];
         }
     }
-    return [null,null];
+    return [null, null];
 
 }
 
@@ -161,14 +157,12 @@ function format_singlesection_section_last_activity_url($modinfo, $section, $cou
  * @param $userid
  * @return bool
  */
-function format_singlesection_course_completed($course, $userid)
-{
+function format_singlesection_course_completed($course, $userid) {
     $cinfo = new completion_info($course);
     return $cinfo->is_course_complete($userid);
 }
 
-function format_singlesection_progress_bar_info($course, $modid)
-{
+function format_singlesection_progress_bar_info($course, $modid) {
     $modinfo = get_fast_modinfo($course);
 
     $sections = $modinfo->get_section_info_all();
@@ -177,7 +171,9 @@ function format_singlesection_progress_bar_info($course, $modid)
 
     foreach ($sections as $section => $thissection) :
 
-        if ($thissection->section == 0) continue;
+        if ($thissection->section == 0) {
+            continue;
+        }
 
         if (empty($modinfo->sections[$thissection->section])) {
 
@@ -186,10 +182,7 @@ function format_singlesection_progress_bar_info($course, $modid)
         foreach ($modinfo->sections[$thissection->section] as $cmid) :
 
             $thismod = $modinfo->cms[$cmid];
-
-//            if ($thismod->uservisible) {
-
-            // Temporary solution for delete in progress bug
+            // Temporary solution for delete in progress bug.
             if ($thismod->uservisible && !$thismod->deletioninprogress) {
 
                 $mods[$thismod->id] = $thismod;
@@ -208,8 +201,7 @@ function format_singlesection_progress_bar_info($course, $modid)
     return [$total, $position];
 }
 
-function format_singlesection_get_certificate_module_url($course, $userid)
-{
+function format_singlesection_get_certificate_module_url($course, $userid) {
     global $DB;
 
     $modinfo = get_fast_modinfo($course);
@@ -225,14 +217,12 @@ function format_singlesection_get_certificate_module_url($course, $userid)
         endforeach;
     endforeach;
 
-    $last_section = array_key_last($sections);
+    $lastsection = array_key_last($sections);
 
     return new moodle_url('/course/view.php', [
         'id' => $course->id,
-        'section' => $last_section ?? 1,
+        'section' => $lastsection ?? 1,
     ]);
-
-
 }
 
 /**
@@ -240,8 +230,7 @@ function format_singlesection_get_certificate_module_url($course, $userid)
  * @param $userid
  * @return $cinfo
  */
-function format_singlesection_course_completion_percentage($course, $userid)
-{
+function format_singlesection_course_completion_percentage($course, $userid) {
 
     $progressinfo = \core_completion\progress::get_course_progress_percentage($course, $userid);
     return $progressinfo;
